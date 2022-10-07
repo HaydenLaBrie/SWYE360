@@ -13,6 +13,7 @@ mydb = mysql.connector.connect(
 # Store it in an array
 # Export it to graphing software (library)
 
+#testsdfggdf
 
 studentName = input("Please enter student name:")
 # print(studentName)
