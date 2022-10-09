@@ -15,13 +15,12 @@ mydb = mysql.connector.connect(
 
 #testsdfggdf
 
-studentName = input("Please enter student name:")
-# print(studentName)
-
+firstName = input("Please enter First name: ")
+lastName = input("Please enter Last name: ")
 
 
 mycursor = mydb.cursor()
-mycursor.execute("SELECT studentlogin, first_name FROM student WHERE first_name = %s", (studentName,))
+mycursor.execute("SELECT first_name, last_name, studentlogin FROM student WHERE first_name = %s", (firstName,))
 
 x = mycursor.fetchall()
 print(x[0][0])
