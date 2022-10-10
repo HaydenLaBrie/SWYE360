@@ -1,7 +1,10 @@
 from urllib.parse import urlparse
 import mysql.connector
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from pandas import Series, DataFrame
+
 mydb = mysql.connector.connect(
     host='localhost',
     user='root',
