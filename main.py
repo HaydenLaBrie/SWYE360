@@ -1,5 +1,7 @@
+from urllib.parse import urlparse
 import mysql.connector
-
+import matplotlib.pyplot as plt
+import pandas as pd
 mydb = mysql.connector.connect(
     host='localhost',
     user='root',
