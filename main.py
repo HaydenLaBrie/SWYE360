@@ -3,13 +3,6 @@ import mysql.connector
 import matplotlib.pyplot as plt
 
 
-# gets firstname and lastname from console prompt
-def get_user_information():
-    firstName = input("Please enter First name: ")
-    lastName = input("Please enter Last name: ")
-    return firstName, lastName
-
-
 # prints the top 5 most used software for a given student to the console
 def print_top_5_to_console(top):
     print("#1: " + top[0][1] + " ---- " + "Total time: " + str(top[0][2]))
@@ -22,7 +15,8 @@ def print_top_5_to_console(top):
 # creates a pie chart for a given student and also returns a list of tuples.
 # The list is 0 - 4 representing the top 5 websites
 # The tuple is the website url and the total time spent in seconds
-def create_chart(firstName, lastName):
+def create_student_chart(firstName, lastName, view):
+    t = [firstName, lastName]
     mycursor = mydb.cursor()
     mycursor.execute("SELECT first_name, last_name, studentlogin FROM student WHERE first_name = %s AND last_name = %s",
                      (firstName, lastName))
@@ -33,6 +27,33 @@ def create_chart(firstName, lastName):
         (currentUserID,))
     top_used_software = mycursor.fetchall()
     # parses each website via objects
+    parse_and_print(top_used_software, view, t)
+    return top_used_software
+
+
+def create_district_chart(view):
+    t = ['null', 'null']
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT urlAppId, appdetails, SUM(totalSpentTime) AS TotalTime FROM students_analytics WHERE districtid='14085' GROUP BY urlAppId ORDER BY TotalTime DESC",
+        ())
+    top_used_software = mycursor.fetchall()
+    parse_and_print(top_used_software, view, t)
+    return top_used_software
+
+
+def create_school_chart(school, view):
+    t = [school, 'null']
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT urlAppId, appdetails, SUM(totalSpentTime) AS TotalTime FROM students_analytics WHERE schoolid= %s GROUP BY urlAppId ORDER BY TotalTime DESC",
+        (school,))
+    top_used_software = mycursor.fetchall()
+    parse_and_print(top_used_software, view, t)
+    return top_used_software
+
+
+def parse_and_print(top_used_software, view, t):
     W1 = urlparse(top_used_software[0][1])
     W2 = urlparse(top_used_software[1][1])
     W3 = urlparse(top_used_software[2][1])
@@ -66,10 +87,13 @@ def create_chart(firstName, lastName):
     fig, ax = plt.subplots()
     ax.pie(sizes, labels=labels, autopct='%1.1f%%')
     ax.axis('equal')  # Equal aspect ratio ensures the pie chart is circular.
-    ax.set_title('TOP 5 USED SOFTWARE FOR\n' + firstName + " - " + lastName)
-
+    if view == 1:
+        ax.set_title('TOP 5 USED SOFTWARE FOR DISTRICT\n')
+    if view == 2:
+        ax.set_title('TOP 5 USED SOFTWARE FOR' + t[0] + t[1])
+    else:
+        ax.set_title('TOP 5 USED SOFTWARE FOR' + t[0])
     plt.show()
-    return top_used_software
 
 
 mydb = mysql.connector.connect(
@@ -79,7 +103,17 @@ mydb = mysql.connector.connect(
     port='3306',
     database='swye360'
 )
-
-firstName, lastName = get_user_information()
-most_used = create_chart(firstName, lastName)
-print_top_5_to_console(most_used)
+view = input("Please type integer to select from menu and hit enter \n1.District\n2.Student\n3.School\n")
+view = int(view)
+if view == 2:
+    firstName = input("Please enter First name: ")
+    lastName = input("Please enter Last name: ")
+    most_used = create_student_chart(firstName, lastName, view)
+    print_top_5_to_console(most_used)
+if view == 3:
+    schoolid = input("Please enter schoolid: ")
+    school = int(schoolid)
+    most_used = create_school_chart(schoolid, view)
+else:
+    most_used = create_district_chart(view)
+    print_top_5_to_console(most_used)
