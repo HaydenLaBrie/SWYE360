@@ -301,8 +301,6 @@ elif view == 4:
 
                 examScoreM = [] #math score for given student
                 dateofExamM = [] #day of taken exam for given student
-                #0 element score points to 0 element date
-                #dictionary? or something else
                 examScoreR = []
                 dateofExamR = []
                 for x in range(9):
@@ -336,10 +334,6 @@ elif view == 4:
                             examScoreR.append(grade6R[1::2])
                             dateofExamR.append(grade6R[2::2])
 
-                # last_connection = datetime.datetime.strptime("1/11/2009", "%m/%d/%Y").strftime("%Y-%m-%d")
-                # print(last_connection)
-                # dateofExamM
-
                 flattenlist = []
                 flattenlist = list(numpy.concatenate(dateofExamM).flat)
                 dateofExamM.clear()
@@ -363,48 +357,72 @@ elif view == 4:
                 examScoreR.clear()
                 examScoreR = flattenlist3
                 print(examScoreR)
+                while True:
+                    try:
+                        whatToLookFor = str(input("Type M for Math, Type R for Reading: "))
+                    except ValueError:
+                        print("Please enter a valid number 2-6")
+                        continue
+                    if whatToLookFor == "R" or whatToLookFor == "r":
+                        temporary = []
+                        # print(str(examScoreM[0]))
+                        z = str(examScoreR[0])
+                        # print(z)
+                        n = 0
+                        while n < len(examScoreR):
+                            temporary.append(str(examScoreR[n]))
+                            n = n + 1
+                        # print(temporary)
+                        newstr = []
+                        n = 0
+                        while n < len(temporary):
+                            newstr.append(int(temporary[n].replace("%", "")))
+                            n = n + 1
 
-                # while:
-                #     datetime.strptime("21/12/2008", "%d/%m/%y").strftime('%Y-%m-%d')
+                        # replaces the slashes, and sorts the date, and brings the exam scores along with it.
+                        dateofExamR = [x.replace("/", "-") for x in dateofExamR]
+                        dateofExamR, newstr = zip(
+                            *sorted(zip(dateofExamR, newstr), key=lambda date: datetime.strptime(date[0], '%m-%d-%y')))
+                        data = list(zip(dateofExamR, newstr))
 
-                # date = input("Enter date: ")  # get date
-                # l = date.split("/")  # split it into month, day and year
-                # result = l[2][2:] + "-" + l[0] + "-" + l[1]  # add them in dd-mm-yy format
-                # print("Results:", result)  # print result
+                        # plot lines
+                        plt.xticks(rotation=45, ha='right')
+                        plt.plot(dateofExamR, newstr, label="line 1", linestyle="-")
+                        plt.legend()
+                        plt.show()
+                        break
+                    elif whatToLookFor == "M" or whatToLookFor == "m":
+                        temporary = []
+                        # print(str(examScoreM[0]))
+                        z = str(examScoreM[0])
+                        # print(z)
+                        n = 0
+                        while n < len(examScoreM):
+                            temporary.append(str(examScoreM[n]))
+                            n = n + 1
+                        # print(temporary)
+                        newstr = []
+                        n = 0
+                        while n < len(temporary):
+                            newstr.append(int(temporary[n].replace("%", "")))
+                            n = n + 1
 
-                temporary = []
-                # print(str(examScoreM[0]))
-                z = str(examScoreM[0])
-                # print(z)
-                n = 0
-                while n < len(examScoreM):
-                    temporary.append(str(examScoreM[n]))
-                    n = n + 1
-                # print(temporary)
-                newstr = []
-                n = 0
-                while n < len(temporary):
-                    newstr.append(int(temporary[n].replace("%", "")))
-                    n = n + 1
-                # temporary = [[float(j.strip('%')) for j in i] for i in temporary]
-                print(newstr)
+                        # replaces the slashes, and sorts the date, and brings the exam scores along with it.
+                        dateofExamM = [x.replace("/", "-") for x in dateofExamM]
+                        dateofExamM, newstr = zip(
+                            *sorted(zip(dateofExamM, newstr), key=lambda date: datetime.strptime(date[0], '%m-%d-%y')))
+                        data = list(zip(dateofExamM, newstr))
+                        print(dateofExamM)
+                        print(newstr)
 
-                dateofExamM = [x.replace("/", "-") for x in dateofExamM]
-                dateofExamM, newstr = zip(*sorted(zip(dateofExamM, newstr), key=lambda date: datetime.strptime(date[0], '%m-%d-%y')))
-                data = list(zip(dateofExamM, newstr))
-                # sorts the data of date time
-                # dateofExamM.sort(key=lambda date: datetime.strptime(date, "%m-%d-%y"))
-                print(dateofExamM)
-                print(newstr)
-
-                x = [72, 100, 70, 80, 50, 80, 100, 90, 77, 67, 80, 90]
-                y = [1, 2, 3, 4, 5]
-
-                # plot lines
-                plt.xticks(rotation=45, ha='right')
-                plt.plot(dateofExamM, newstr, label="line 1", linestyle="-")
-                plt.legend()
-                plt.show()
+                        # plot lines
+                        plt.xticks(rotation=45, ha='right')
+                        plt.plot(dateofExamM, newstr, label="line 1", linestyle="-")
+                        plt.legend()
+                        plt.show()
+                        break
+                    else:
+                        print('Please Enter M or R')
 
             break
         else:
