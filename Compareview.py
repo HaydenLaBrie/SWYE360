@@ -145,7 +145,8 @@ elif view == 4:
             print("Please enter a valid number 2-6")
             continue
         # user can only compare between 2 and 6 users
-        plt.xticks(rotation=45, ha='right')
+        figure, axis = plt.subplots(num, constrained_layout=True)
+        whatStudentAreWeOn = 0
         if num >= 2 and num <= 6:
             for x in range(num):
                 firstName = input("Please enter Student 1 First name: ")
@@ -387,7 +388,8 @@ elif view == 4:
                         data = list(zip(dateofExamR, newstr))
 
                         # plot lines
-                        plt.plot(dateofExamR, newstr)
+                        axis[whatStudentAreWeOn].plot(dateofExamR, newstr)
+                        whatStudentAreWeOn = whatStudentAreWeOn + 1
                         break
                     elif whatToLookFor == "M" or whatToLookFor == "m":
                         temporary = []
@@ -414,10 +416,18 @@ elif view == 4:
                         print(newstr)
 
                         # plot lines
-                        plt.plot(dateofExamM, newstr)
+                        axis[whatStudentAreWeOn].plot(dateofExamM, newstr)
+                        # axis.tick_params(axis="x", rotate=45)
+                        whatStudentAreWeOn = whatStudentAreWeOn + 1
                         break
                     else:
                         print('Please Enter M or R')
+            studentComparing = num-1
+            for ax in axis.flatten():
+                plt.sca(ax)
+                plt.title('Student number ' + '%s' % studentComparing)
+                plt.xticks(rotation=45, )
+                studentComparing = studentComparing - 1
             plt.legend()
             plt.show()
             break
