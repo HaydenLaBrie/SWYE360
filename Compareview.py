@@ -1,8 +1,9 @@
 from urllib.parse import urlparse
 import mysql.connector
 import matplotlib.pyplot as plt
-import datetime
+from datetime import datetime
 import numpy
+import _strptime
 
 
 # prints the top 5 most used software for a given student to the console
@@ -372,20 +373,28 @@ elif view == 4:
                 # print("Results:", result)  # print result
 
                 temporary = []
-                print(str(examScoreM[0]))
+                # print(str(examScoreM[0]))
                 z = str(examScoreM[0])
-                print(z)
+                # print(z)
                 n = 0
                 while n < len(examScoreM):
                     temporary.append(str(examScoreM[n]))
                     n = n + 1
-                print(temporary)
+                # print(temporary)
                 newstr = []
                 n = 0
                 while n < len(temporary):
                     newstr.append(int(temporary[n].replace("%", "")))
                     n = n + 1
                 # temporary = [[float(j.strip('%')) for j in i] for i in temporary]
+                print(newstr)
+
+                dateofExamM = [x.replace("/", "-") for x in dateofExamM]
+                dateofExamM, newstr = zip(*sorted(zip(dateofExamM, newstr), key=lambda date: datetime.strptime(date[0], '%m-%d-%y')))
+                data = list(zip(dateofExamM, newstr))
+                # sorts the data of date time
+                # dateofExamM.sort(key=lambda date: datetime.strptime(date, "%m-%d-%y"))
+                print(dateofExamM)
                 print(newstr)
 
                 x = [72, 100, 70, 80, 50, 80, 100, 90, 77, 67, 80, 90]
