@@ -145,6 +145,7 @@ elif view == 4:
             print("Please enter a valid number 2-6")
             continue
         # user can only compare between 2 and 6 users
+        plt.xticks(rotation=45, ha='right')
         if num >= 2 and num <= 6:
             for x in range(num):
                 firstName = input("Please enter Student 1 First name: ")
@@ -386,10 +387,7 @@ elif view == 4:
                         data = list(zip(dateofExamR, newstr))
 
                         # plot lines
-                        plt.xticks(rotation=45, ha='right')
-                        plt.plot(dateofExamR, newstr, label="line 1", linestyle="-")
-                        plt.legend()
-                        plt.show()
+                        plt.plot(dateofExamR, newstr)
                         break
                     elif whatToLookFor == "M" or whatToLookFor == "m":
                         temporary = []
@@ -416,18 +414,15 @@ elif view == 4:
                         print(newstr)
 
                         # plot lines
-                        plt.xticks(rotation=45, ha='right')
-                        plt.plot(dateofExamM, newstr, label="line 1", linestyle="-")
-                        plt.legend()
-                        plt.show()
+                        plt.plot(dateofExamM, newstr)
                         break
                     else:
                         print('Please Enter M or R')
-
+            plt.legend()
+            plt.show()
             break
         else:
             print('number of students must be between 2-6')
-
 else:
     most_used = create_district_chart(view)
     print_top_5_to_console(most_used)
