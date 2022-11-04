@@ -1,9 +1,11 @@
 from urllib.parse import urlparse
 import mysql.connector
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from datetime import datetime
 import numpy
-import _strptime
+import matplotlib.dates as mdates
+
 
 
 # prints the top 5 most used software for a given student to the console
@@ -100,7 +102,6 @@ def parse_and_print(top_used_software, view, t):
     labels = [str(Website1), str(Website2), str(Website3), str(Website4), str(Website5)]
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
 
-    fig, ax = plt.subplots()
     ax.pie(sizes, labels=labels, autopct='%1.1f%%')
     ax.axis('equal')  # Equal aspect ratio ensures the pie chart is circular.
     if view == 1:
@@ -145,8 +146,7 @@ elif view == 4:
             print("Please enter a valid number 2-6")
             continue
         # user can only compare between 2 and 6 users
-        figure, axis = plt.subplots(num, constrained_layout=True)
-        whatStudentAreWeOn = 0
+        plt.xticks(rotation=45, ha='right')
         if num >= 2 and num <= 6:
             for x in range(num):
                 firstName = input("Please enter Student 1 First name: ")
@@ -388,8 +388,7 @@ elif view == 4:
                         data = list(zip(dateofExamR, newstr))
 
                         # plot lines
-                        axis[whatStudentAreWeOn].plot(dateofExamR, newstr)
-                        whatStudentAreWeOn = whatStudentAreWeOn + 1
+                        plt.plot(dateofExamR, newstr)
                         break
                     elif whatToLookFor == "M" or whatToLookFor == "m":
                         temporary = []
@@ -416,20 +415,25 @@ elif view == 4:
                         print(newstr)
 
                         # plot lines
-                        axis[whatStudentAreWeOn].plot(dateofExamM, newstr)
-                        # axis.tick_params(axis="x", rotate=45)
-                        whatStudentAreWeOn = whatStudentAreWeOn + 1
+                        x = [datetime.strptime(d, '%m-%d-%y').date() for d in dateofExamM]
+                        plt.xticks(rotation=45, ha='right')
+                        plt.plot(x, newstr, label=str(firstName) + " " + str(lastName))
+
                         break
                     else:
                         print('Please Enter M or R')
-            studentComparing = num-1
-            for ax in axis.flatten():
-                plt.sca(ax)
-                plt.title('Student number ' + '%s' % studentComparing)
-                plt.xticks(rotation=45, )
-                studentComparing = studentComparing - 1
+            plt.title('Compare View')
+            plt.ylabel('Grades')
+            plt.xlabel('Time')
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d-%y'))
+            plt.gca().xaxis.set_major_locator(mdates.DayLocator())
+            n = 50
+            [l.set_visible(False) for (i,l) in enumerate(plt.gca().xaxis.get_ticklabels()) if i % n != 0]
             plt.legend()
+            plt.tight_layout()
             plt.show()
+            plt.gcf().autofmt_xdate()
+
             break
         else:
             print('number of students must be between 2-6')
