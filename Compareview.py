@@ -59,7 +59,7 @@ def create_school_chart(school, view):
     parse_and_print(top_used_software, view, t)
     return top_used_software
 
-
+# gets the student identifier from given first and last name
 def get_student_email(firstName, lastName, view):
     t = [firstName, lastName]
     mycursor = mydb.cursor()
@@ -367,14 +367,11 @@ elif view == 4:
                         continue
                     if whatToLookFor == "R" or whatToLookFor == "r":
                         temporary = []
-                        # print(str(examScoreM[0]))
                         z = str(examScoreR[0])
-                        # print(z)
                         n = 0
                         while n < len(examScoreR):
                             temporary.append(str(examScoreR[n]))
                             n = n + 1
-                        # print(temporary)
                         newstr = []
                         n = 0
                         while n < len(temporary):
@@ -386,20 +383,22 @@ elif view == 4:
                         dateofExamR, newstr = zip(
                             *sorted(zip(dateofExamR, newstr), key=lambda date: datetime.strptime(date[0], '%m-%d-%y')))
                         data = list(zip(dateofExamR, newstr))
+                        print(dateofExamR)
+                        print(newstr)
 
                         # plot lines
-                        plt.plot(dateofExamR, newstr)
+                        x = [datetime.strptime(d, '%m-%d-%y').date() for d in dateofExamR]
+                        plt.xticks(rotation=45, ha='right')
+                        plt.plot(x, newstr, label=str(firstName) + " " + str(lastName) + " R")
+
                         break
                     elif whatToLookFor == "M" or whatToLookFor == "m":
                         temporary = []
-                        # print(str(examScoreM[0]))
                         z = str(examScoreM[0])
-                        # print(z)
                         n = 0
                         while n < len(examScoreM):
                             temporary.append(str(examScoreM[n]))
                             n = n + 1
-                        # print(temporary)
                         newstr = []
                         n = 0
                         while n < len(temporary):
@@ -417,7 +416,7 @@ elif view == 4:
                         # plot lines
                         x = [datetime.strptime(d, '%m-%d-%y').date() for d in dateofExamM]
                         plt.xticks(rotation=45, ha='right')
-                        plt.plot(x, newstr, label=str(firstName) + " " + str(lastName))
+                        plt.plot(x, newstr, label=str(firstName) + " " + str(lastName) + " M")
 
                         break
                     else:
